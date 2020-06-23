@@ -2,10 +2,9 @@ extern crate nom;
 extern crate simple_error;
 
 use nom::{
-    multi::many0,
-    bytes::complete::{tag, take_while},
     character::complete::{anychar, digit1, one_of, space0},
     combinator::map_res,
+    multi::many0,
     sequence::tuple,
     IResult,
 };
@@ -42,15 +41,19 @@ fn complex_dice_roll(input: &str) -> IResult<&str, ComplexDiceRoll> {
     let (input, _) = space0(input)?;
     let (input, dice_roll) = simple_dice_roll(input)?;
     let (input, roll_mods) = many0(dice_roll_mod)(input)?;
-    
-    Ok((input, ComplexDiceRoll {
-        dice_roll,
-        roll_mods
-    }))
+
+    Ok((
+        input,
+        ComplexDiceRoll {
+            dice_roll,
+            roll_mods,
+        },
+    ))
 }
 
 fn simple_dice_roll(input: &str) -> IResult<&str, DiceRoll> {
-    let (input, (number_of_dice, _, dice_range)) = tuple((number, dice_roll_separator, number))(input)?;
+    let (input, (number_of_dice, _, dice_range)) =
+        tuple((number, dice_roll_separator, number))(input)?;
     Ok((
         input,
         DiceRoll {
@@ -103,8 +106,8 @@ fn parse_roll_mod_type(c: char) -> Result<RollModType, SimpleError> {
 impl PartialEq<ComplexDiceRoll> for ComplexDiceRoll {
     fn eq(&self, other: &ComplexDiceRoll) -> bool {
         self.dice_roll == other.dice_roll
-        && self.roll_mods.len() == other.roll_mods.len()
-        && self.roll_mods.eq(&other.roll_mods)
+            && self.roll_mods.len() == other.roll_mods.len()
+            && self.roll_mods.eq(&other.roll_mods)
     }
 }
 
@@ -163,21 +166,33 @@ mod tests {
                         number_of_dice: 23,
                         dice_range: 45
                     },
-                    roll_mods: vec![ RollMod {roll_mod_type: RollModType::E, value: 32}],
+                    roll_mods: vec![RollMod {
+                        roll_mod_type: RollModType::E,
+                        value: 32
+                    }],
                 }
             ))
         );
 
         assert_eq!(
-            complex_dice_roll("23d45 e32   "),
+            complex_dice_roll("23d45 e32  r12 "),
             Ok((
-                "   ",
+                " ",
                 ComplexDiceRoll {
                     dice_roll: DiceRoll {
                         number_of_dice: 23,
                         dice_range: 45
                     },
-                    roll_mods: vec![ RollMod {roll_mod_type: RollModType::E, value: 32}],
+                    roll_mods: vec![
+                        RollMod {
+                            roll_mod_type: RollModType::E,
+                            value: 32
+                        },
+                        RollMod {
+                            roll_mod_type: RollModType::R,
+                            value: 12
+                        }
+                    ],
                 }
             ))
         );
