@@ -147,7 +147,18 @@ mod tests {
                     dice_range: 45
                 }
             ))
-        )
+        );
+
+        assert_eq!(
+            simple_dice_roll(" 23 D  45 "),
+            Ok((
+                " ",
+                DiceRoll {
+                    number_of_dice: 23,
+                    dice_range: 45
+                }
+            ))
+        );
     }
 
     #[test]
@@ -175,7 +186,7 @@ mod tests {
         );
 
         assert_eq!(
-            complex_dice_roll("23d45 e32  r12 "),
+            complex_dice_roll("23d45 e32  R12 "),
             Ok((
                 " ",
                 ComplexDiceRoll {
