@@ -18,7 +18,7 @@ impl<R: Rng> RollRequest<R> {
         dice_range: u64,
     ) -> &'a mut RollRequest<R> {
         let mut roll_result: Vec<u64> = vec![];
-        for i in 0..number_of_dice {
+        for _ in 0..number_of_dice {
             let dice_roll = self.rng.gen_range(1, dice_range + 1);
             roll_result.push(dice_roll);
         }
@@ -94,8 +94,8 @@ mod tests {
         assert_eq!(request.result, Some(vec![1, 1, 1, 1, 1]));
 
         // Works when you do it twice
-        request.roll_dice(5, 10);
-        assert_eq!(request.result, Some(vec![1, 1, 1, 1, 1]));
+        request.roll_dice(6, 10);
+        assert_eq!(request.result, Some(vec![1, 1, 1, 1, 1, 1]));
     }
 
     #[test]
@@ -148,9 +148,9 @@ mod tests {
         let rng = rand::thread_rng();
         let mut request = RollRequest::new(rng);
 
-        request.roll_dice(5, 10);
+        request.roll_dice(50, 100);
         let roll_result = request.result.clone().unwrap();
-        request.remove(4);
+        request.remove(49);
         let removed_result = request.result.clone().unwrap();
         assert_eq!(*roll_result.iter().max().unwrap(), removed_result[0]);
     }
@@ -178,7 +178,7 @@ mod tests {
         let rng = rand::thread_rng();
         let mut request = RollRequest::new(rng);
 
-        request.roll_dice(5, 10);
+        request.roll_dice(50, 100);
         let roll_result = request.result.clone().unwrap();
         request.keep(1);
         let removed_result = request.result.clone().unwrap();
@@ -208,7 +208,7 @@ mod tests {
         let rng = rand::thread_rng();
         let mut request = RollRequest::new(rng);
 
-        request.roll_dice(5, 10);
+        request.roll_dice(50, 100);
         let roll_result = request.result.clone().unwrap();
         request.keep_lower(1);
         let removed_result = request.result.clone().unwrap();
