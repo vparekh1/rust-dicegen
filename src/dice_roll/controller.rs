@@ -5,12 +5,12 @@ use super::parser;
 
 fn roll_complex_dice(roll: parser::ComplexDiceRoll) -> calculator::RollRequest<rand::prelude::ThreadRng> {
     let mut roll_request = roll_simple_dice(roll.dice_roll.clone());
-    for i in roll.roll_mods {
-        match i.roll_mod_type {
-            parser::RollModType::E => roll_request.explode(i.value, roll.dice_roll.dice_range),
-            parser::RollModType::R => roll_request.remove(i.value),
-            parser::RollModType::K => roll_request.keep(i.value),
-            parser::RollModType::L => roll_request.keep_lower(i.value),
+    for m in roll.roll_mods {
+        match m.roll_mod_type {
+            parser::RollModType::E => roll_request.explode(m.value, roll.dice_roll.dice_range),
+            parser::RollModType::R => roll_request.remove(m.value),
+            parser::RollModType::K => roll_request.keep(m.value),
+            parser::RollModType::L => roll_request.keep_lower(m.value),
         };
     }
     roll_request
