@@ -9,4 +9,3 @@ edition = "2018"
 [dependencies]
 rand = "^0.7.3"
 nom = "^5.1.1"
-simple-error = "^0.1.9"

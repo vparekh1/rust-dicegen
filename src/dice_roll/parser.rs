@@ -1,5 +1,4 @@
 extern crate nom;
-extern crate simple_error;
 
 use nom::{
     character::complete::{anychar, digit1, one_of, space0},
@@ -9,33 +8,7 @@ use nom::{
     IResult,
 };
 
-use simple_error::SimpleError;
-
-#[derive(Debug)]
-pub struct ComplexDiceRoll {
-    pub dice_roll: DiceRoll,
-    pub roll_mods: Vec<RollMod>,
-}
-
-#[derive(PartialEq, Debug, Clone)]
-pub struct DiceRoll {
-    pub number_of_dice: u64,
-    pub dice_range: u64,
-}
-
-#[derive(PartialEq, Debug, Clone)]
-pub struct RollMod {
-    pub roll_mod_type: RollModType,
-    pub value: u64,
-}
-
-#[derive(PartialEq, Debug, Clone)]
-pub enum RollModType {
-    E,
-    R,
-    K,
-    L,
-}
+use super::{ComplexDiceRoll, DiceRoll, RollMod, RollModType};
 
 pub fn complex_dice_roll(input: &str) -> IResult<&str, ComplexDiceRoll> {
     let (input, _) = space0(input)?;
@@ -93,21 +66,13 @@ fn parse_number(text: &str) -> Result<u64, std::num::ParseIntError> {
     u64::from_str_radix(text, 10)
 }
 
-fn parse_roll_mod_type(c: char) -> Result<RollModType, SimpleError> {
+fn parse_roll_mod_type(c: char) -> Result<RollModType, &'static str> {
     match &c.to_lowercase().next().unwrap() {
         'e' => Ok(RollModType::E),
         'r' => Ok(RollModType::R),
         'k' => Ok(RollModType::K),
         'l' => Ok(RollModType::L),
-        _ => simple_error::bail!("Invalid Roll Type"),
-    }
-}
-
-impl PartialEq<ComplexDiceRoll> for ComplexDiceRoll {
-    fn eq(&self, other: &ComplexDiceRoll) -> bool {
-        self.dice_roll == other.dice_roll
-            && self.roll_mods.len() == other.roll_mods.len()
-            && self.roll_mods.eq(&other.roll_mods)
+        _ => Err("Invalid Roll Type"),
     }
 }
 

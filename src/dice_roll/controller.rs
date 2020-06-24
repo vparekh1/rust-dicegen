@@ -1,31 +1,23 @@
 extern crate rand;
 
-use super::calculator;
-use super::parser;
+use super::{ComplexDiceRoll, DiceRoll, RollModType, RollRequest};
 
-fn roll_complex_dice(roll: parser::ComplexDiceRoll) -> calculator::RollRequest<rand::prelude::ThreadRng> {
+pub fn roll_complex_dice(roll: ComplexDiceRoll) -> RollRequest<rand::prelude::ThreadRng> {
     let mut roll_request = roll_simple_dice(roll.dice_roll.clone());
     for m in roll.roll_mods {
         match m.roll_mod_type {
-            parser::RollModType::E => roll_request.explode(m.value, roll.dice_roll.dice_range),
-            parser::RollModType::R => roll_request.remove(m.value),
-            parser::RollModType::K => roll_request.keep(m.value),
-            parser::RollModType::L => roll_request.keep_lower(m.value),
+            RollModType::E => roll_request.explode(m.value, roll.dice_roll.dice_range),
+            RollModType::R => roll_request.remove(m.value),
+            RollModType::K => roll_request.keep(m.value),
+            RollModType::L => roll_request.keep_lower(m.value),
         };
     }
     roll_request
 }
 
-fn parse_dice(text: &str) -> Result<parser::ComplexDiceRoll, &str> {
-    match parser::complex_dice_roll(text) {
-        Ok((_, successful_parsed_roll)) => Ok(successful_parsed_roll),
-        Err(_) => Err("Invalid dice roll format"),
-    }
-}
-
-fn roll_simple_dice(parser: parser::DiceRoll) -> calculator::RollRequest<rand::prelude::ThreadRng> {
+fn roll_simple_dice(parser: DiceRoll) -> RollRequest<rand::prelude::ThreadRng> {
     let rng = rand::thread_rng();
-    let mut roll_request = calculator::RollRequest::new(rng);
+    let mut roll_request = RollRequest::new(rng);
 
     roll_request.roll_dice(parser.number_of_dice, parser.dice_range);
     roll_request
@@ -33,7 +25,15 @@ fn roll_simple_dice(parser: parser::DiceRoll) -> calculator::RollRequest<rand::p
 
 #[cfg(test)]
 mod tests {
+    use super::super::parser;
     use super::*;
+
+    fn parse_dice(text: &str) -> Result<ComplexDiceRoll, &str> {
+        match parser::complex_dice_roll(text) {
+            Ok((_, successful_parsed_roll)) => Ok(successful_parsed_roll),
+            Err(_) => Err("Invalid dice roll format"),
+        }
+    }
 
     fn parse_and_roll_dice(text: &str) -> Result<Vec<u64>, &str> {
         let dice_roll_parse = parse_dice(text)?;

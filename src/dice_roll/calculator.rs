@@ -1,11 +1,7 @@
 extern crate rand;
 
 use rand::Rng;
-
-pub struct RollRequest<R: Rng> {
-    rng: R,
-    pub result: Option<Vec<u64>>,
-}
+use super::RollRequest;
 
 impl<R: Rng> RollRequest<R> {
     pub fn new(rng: R) -> RollRequest<R> {
