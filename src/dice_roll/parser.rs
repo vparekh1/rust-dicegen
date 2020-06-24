@@ -13,31 +13,31 @@ use simple_error::SimpleError;
 
 #[derive(Debug)]
 pub struct ComplexDiceRoll {
-    dice_roll: DiceRoll,
-    roll_mods: Vec<RollMod>,
+    pub dice_roll: DiceRoll,
+    pub roll_mods: Vec<RollMod>,
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub struct DiceRoll {
-    number_of_dice: u64,
-    dice_range: u64,
+    pub number_of_dice: u64,
+    pub dice_range: u64,
 }
 
 #[derive(PartialEq, Debug, Clone)]
-struct RollMod {
-    roll_mod_type: RollModType,
-    value: u64,
+pub struct RollMod {
+    pub roll_mod_type: RollModType,
+    pub value: u64,
 }
 
 #[derive(PartialEq, Debug, Clone)]
-enum RollModType {
+pub enum RollModType {
     E,
     R,
     K,
     L,
 }
 
-fn complex_dice_roll(input: &str) -> IResult<&str, ComplexDiceRoll> {
+pub fn complex_dice_roll(input: &str) -> IResult<&str, ComplexDiceRoll> {
     let (input, _) = space0(input)?;
     let (input, dice_roll) = simple_dice_roll(input)?;
     let (input, roll_mods) = many0(dice_roll_mod)(input)?;

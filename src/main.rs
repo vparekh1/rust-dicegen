@@ -1,7 +1,6 @@
 extern crate rand;
 
-mod roll;
-mod parser;
+mod dice_roll;
 
 use rand::Rng;
 

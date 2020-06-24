@@ -4,7 +4,7 @@ use rand::Rng;
 
 pub struct RollRequest<R: Rng> {
     rng: R,
-    result: Option<Vec<u64>>,
+    pub result: Option<Vec<u64>>,
 }
 
 impl<R: Rng> RollRequest<R> {
@@ -27,7 +27,7 @@ impl<R: Rng> RollRequest<R> {
         self
     }
 
-    fn explode<'a>(
+    pub fn explode<'a>(
         &'a mut self,
         explode_on_greater: u64,
         dice_range: u64,
@@ -50,7 +50,7 @@ impl<R: Rng> RollRequest<R> {
         self
     }
 
-    fn remove<'a>(&'a mut self, count: u64) -> &'a mut RollRequest<R> {
+    pub fn remove<'a>(&'a mut self, count: u64) -> &'a mut RollRequest<R> {
         if let Some(ref unwrapped_result) = self.result {
             if unwrapped_result.len() > count as usize {
                 self.result = Some(unwrapped_result[count as usize..].to_vec());
@@ -61,7 +61,7 @@ impl<R: Rng> RollRequest<R> {
         self
     }
 
-    fn keep<'a>(&'a mut self, count: u64) -> &'a mut RollRequest<R> {
+    pub fn keep<'a>(&'a mut self, count: u64) -> &'a mut RollRequest<R> {
         if let Some(ref unwrapped_result) = self.result {
             if unwrapped_result.len() > count as usize {
                 let keep_index = unwrapped_result.len() - count as usize;
@@ -71,7 +71,7 @@ impl<R: Rng> RollRequest<R> {
         self
     }
 
-    fn keep_lower<'a>(&'a mut self, count: u64) -> &'a mut RollRequest<R> {
+    pub fn keep_lower<'a>(&'a mut self, count: u64) -> &'a mut RollRequest<R> {
         if let Some(ref unwrapped_result) = self.result {
             if unwrapped_result.len() > count as usize {
                 self.result = Some(unwrapped_result[..count as usize].to_vec());
