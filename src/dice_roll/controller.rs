@@ -1,7 +1,5 @@
 extern crate rand;
 
-use rand::Rng;
-
 use super::calculator;
 use super::parser;
 
