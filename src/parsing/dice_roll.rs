@@ -8,7 +8,7 @@ use nom::{
     IResult,
 };
 
-use super::{ComplexDiceRoll, DiceRoll, RollMod, RollModType};
+use super::{number, ComplexDiceRoll, DiceRoll, RollMod, RollModType};
 
 pub fn complex_dice_roll_parse(input: &str) -> IResult<&str, ComplexDiceRoll> {
     let (input, _) = space0(input)?;
@@ -48,11 +48,6 @@ fn dice_roll_mod(input: &str) -> IResult<&str, RollMod> {
     ))
 }
 
-fn number(input: &str) -> IResult<&str, u64> {
-    let (input, _) = space0(input)?;
-    map_res(digit1, parse_number)(input)
-}
-
 fn roll_type(input: &str) -> IResult<&str, RollModType> {
     map_res(anychar, parse_roll_mod_type)(input)
 }
@@ -60,10 +55,6 @@ fn roll_type(input: &str) -> IResult<&str, RollModType> {
 fn dice_roll_separator(input: &str) -> IResult<&str, char> {
     let (input, _) = space0(input)?;
     one_of("dD")(input)
-}
-
-fn parse_number(text: &str) -> Result<u64, std::num::ParseIntError> {
-    u64::from_str_radix(text, 10)
 }
 
 fn parse_roll_mod_type(c: char) -> Result<RollModType, &'static str> {
