@@ -10,7 +10,7 @@ use nom::{
 
 use super::{ComplexDiceRoll, DiceRoll, RollMod, RollModType};
 
-pub fn complex_dice_roll(input: &str) -> IResult<&str, ComplexDiceRoll> {
+pub fn complex_dice_roll_parse(input: &str) -> IResult<&str, ComplexDiceRoll> {
     let (input, _) = space0(input)?;
     let (input, dice_roll) = simple_dice_roll(input)?;
     let (input, roll_mods) = many0(dice_roll_mod)(input)?;
@@ -134,7 +134,7 @@ mod tests {
     #[test]
     fn parse_dice_roll_with_additional_modifications_works_as_expected() {
         assert_eq!(
-            complex_dice_roll("23d45e32"),
+            complex_dice_roll_parse("23d45e32"),
             Ok((
                 "",
                 ComplexDiceRoll {
@@ -151,7 +151,7 @@ mod tests {
         );
 
         assert_eq!(
-            complex_dice_roll("23d45 e32  R12 "),
+            complex_dice_roll_parse("23d45 e32  R12 "),
             Ok((
                 " ",
                 ComplexDiceRoll {

@@ -1,6 +1,7 @@
 extern crate rand;
 
 mod dice_roll;
+mod math_ops;
 
 fn main() {
     // let rng = rand::thread_rng();
