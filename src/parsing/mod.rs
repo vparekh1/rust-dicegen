@@ -1,35 +1,25 @@
-extern crate rand;
-
-pub mod calculator;
-pub mod parser;
-pub mod controller;
-
-#[derive(Debug, Clone)]
-pub struct RollRequest<R: rand::Rng> {
-    rng: R,
-    result: Option<Vec<u64>>,
-}
+pub mod dice_roll;
 
 #[derive(Debug, Clone)]
 pub struct ComplexDiceRoll {
-    dice_roll: DiceRoll,
-    roll_mods: Vec<RollMod>,
+    pub dice_roll: DiceRoll,
+    pub roll_mods: Vec<RollMod>,
 }
 
 #[derive(PartialEq, Debug, Clone, Copy)]
-struct DiceRoll {
-    number_of_dice: u64,
-    dice_range: u64,
+pub struct DiceRoll {
+    pub number_of_dice: u64,
+    pub dice_range: u64,
 }
 
 #[derive(PartialEq, Debug, Clone, Copy)]
-struct RollMod {
-    roll_mod_type: RollModType,
-    value: u64,
+pub struct RollMod {
+    pub roll_mod_type: RollModType,
+    pub value: u64,
 }
 
 #[derive(PartialEq, Debug, Clone, Copy)]
-enum RollModType {
+pub enum RollModType {
     E,
     R,
     K,

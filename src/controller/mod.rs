@@ -1,6 +1,7 @@
 extern crate rand;
 
-use super::{ComplexDiceRoll, DiceRoll, RollModType, RollRequest};
+use crate::calculation::RollRequest;
+use crate::parsing::{ComplexDiceRoll, DiceRoll, RollModType};
 
 pub fn roll_complex_dice(roll: ComplexDiceRoll) -> Option<Vec<u64>> {
     let mut roll_request = roll_simple_dice(roll.dice_roll.clone());
@@ -25,11 +26,10 @@ fn roll_simple_dice(parser: DiceRoll) -> RollRequest<rand::prelude::ThreadRng> {
 
 #[cfg(test)]
 mod tests {
-    use super::super::parser;
     use super::*;
 
     fn parse_dice(text: &str) -> Result<ComplexDiceRoll, &str> {
-        match parser::complex_dice_roll_parse(text) {
+        match crate::parsing::dice_roll::complex_dice_roll_parse(text) {
             Ok((_, successful_parsed_roll)) => Ok(successful_parsed_roll),
             Err(_) => Err("Invalid dice roll format"),
         }

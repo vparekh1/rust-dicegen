@@ -1,7 +1,7 @@
 extern crate rand;
 
-use rand::Rng;
 use super::RollRequest;
+use rand::Rng;
 
 impl<R: Rng> RollRequest<R> {
     pub fn new(rng: R) -> RollRequest<R> {
