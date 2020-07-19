@@ -3,8 +3,8 @@ pub mod math_ops;
 
 #[derive(Debug, Clone)]
 pub struct RollRequest<R: rand::Rng> {
-    pub rng: R,
-    pub result: Option<Vec<u64>>,
+    rng: R,
+    result: Option<Vec<u64>>,
 }
 
 #[derive(Debug, Clone)]

@@ -4,10 +4,26 @@ use super::RollRequest;
 use rand::Rng;
 
 impl<R: Rng> RollRequest<R> {
+    /// Generate a new RollRequest, supplying a random number generator
     pub fn new(rng: R) -> RollRequest<R> {
         RollRequest { rng, result: None }
     }
 
+    /// Generate a vector of `number_of_dice` random integers in `dice_range`
+    ///
+    /// ```
+    /// use rust_dicegen::calculation::RollRequest;
+    /// let rng = rand::thread_rng();
+    /// let mut request = RollRequest::new(rng);
+    /// // Roll 50d100
+    /// let request = request.roll_dice(50, 100).as_vec_ptr();
+
+    /// // 50 values in the result vector
+    /// assert_eq!(request.as_ref().map(|a| a.len()), Some(50));
+    /// // All values are between 1 and 100 inclusive
+    /// assert_eq!(request
+    ///     .map(|x| x.iter().all(|x| *x >= 1 && *x <= 100)), Some(true));
+    /// ```
     pub fn roll_dice<'a>(
         &'a mut self,
         number_of_dice: u64,
@@ -23,6 +39,21 @@ impl<R: Rng> RollRequest<R> {
         self
     }
 
+    /// Take the results of a roll and "explode" it in the following way:
+    ///     - For every roll that's greater or equal to `explode_on_greater` add another reroll to the result
+    ///     - All of the existing rolls as well as future rolls that are greater than the given value
+    ///       are counted towards this explosion
+    ///
+    /// ```
+    /// use rust_dicegen::calculation::RollRequest;
+    /// let rng = rand::thread_rng();
+    /// let mut request = RollRequest::new(rng);
+    ///
+    /// // Roll 50d100 and reroll the dice every time it rolls 100
+    /// let request = request.roll_dice(50, 100)
+    ///                      .explode(100, 100)
+    ///                      .as_vec_ptr();
+    /// ```
     pub fn explode<'a>(
         &'a mut self,
         explode_on_greater: u64,
@@ -46,6 +77,19 @@ impl<R: Rng> RollRequest<R> {
         self
     }
 
+    /// Remove the lowest `count` values in the roll
+    ///
+    /// ```
+    /// use rust_dicegen::calculation::RollRequest;
+    /// let rng = rand::thread_rng();
+    /// let mut request = RollRequest::new(rng);
+    /// let request = request.roll_dice(50, 100)
+    ///                      .remove(30)
+    ///                      .as_vec_ptr();
+    ///
+    /// // Lowest 30 values in the roll are removed
+    /// assert_eq!(request.as_ref().map(|a| a.len()), Some(20));
+    /// ```
     pub fn remove<'a>(&'a mut self, count: u64) -> &'a mut RollRequest<R> {
         if let Some(ref unwrapped_result) = self.result {
             if unwrapped_result.len() > count as usize {
@@ -57,6 +101,19 @@ impl<R: Rng> RollRequest<R> {
         self
     }
 
+    /// Keep the highest `count` values in the roll
+    ///
+    /// ```
+    /// use rust_dicegen::calculation::RollRequest;
+    /// let rng = rand::thread_rng();
+    /// let mut request = RollRequest::new(rng);
+    /// let request = request.roll_dice(50, 100)
+    ///                      .keep(20)
+    ///                      .as_vec_ptr();
+    ///
+    /// // Highest 20 values in the roll will be kept
+    /// assert_eq!(request.as_ref().map(|a| a.len()), Some(20));
+    /// ```
     pub fn keep<'a>(&'a mut self, count: u64) -> &'a mut RollRequest<R> {
         if let Some(ref unwrapped_result) = self.result {
             if unwrapped_result.len() > count as usize {
@@ -67,6 +124,19 @@ impl<R: Rng> RollRequest<R> {
         self
     }
 
+    /// Keep the lowest `count` values in the roll
+    ///
+    /// ```
+    /// use rust_dicegen::calculation::RollRequest;
+    /// let rng = rand::thread_rng();
+    /// let mut request = RollRequest::new(rng);
+    /// let request = request.roll_dice(50, 100)
+    ///                      .keep_lower(20)
+    ///                      .as_vec_ptr();
+    ///
+    /// // Lowest 20 values in the roll will be kept
+    /// assert_eq!(request.as_ref().map(|a| a.len()), Some(20));
+    /// ```
     pub fn keep_lower<'a>(&'a mut self, count: u64) -> &'a mut RollRequest<R> {
         if let Some(ref unwrapped_result) = self.result {
             if unwrapped_result.len() > count as usize {
@@ -74,6 +144,14 @@ impl<R: Rng> RollRequest<R> {
             }
         }
         self
+    }
+
+    pub fn as_vec_ptr<'a>(&'a self) -> Option<&'a Vec<u64>> {
+        self.result.as_ref()
+    }
+
+    pub fn as_vec<'a>(self) -> Option<Vec<u64>> {
+        self.result
     }
 }
 

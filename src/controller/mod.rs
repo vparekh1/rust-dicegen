@@ -13,7 +13,7 @@ pub fn roll_complex_dice(roll: ComplexDiceRoll) -> Option<Vec<u64>> {
             RollModType::L => roll_request.keep_lower(m.value),
         };
     }
-    roll_request.result
+    roll_request.as_vec()
 }
 
 fn roll_simple_dice(parser: DiceRoll) -> RollRequest<rand::prelude::ThreadRng> {
