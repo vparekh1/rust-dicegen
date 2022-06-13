@@ -1,5 +1,5 @@
 [package]
-name = "rust-dicegen"
+name = "diceroll"
 version = "0.1.0"
 authors = ["Vivek Parekh <vp@vivekparekh.ca>"]
 edition = "2018"

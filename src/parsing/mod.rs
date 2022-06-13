@@ -1,4 +1,7 @@
 pub mod dice_roll;
+
+// TODO: Remove after implementing math operations to dice rolls
+#[allow(dead_code)]
 pub mod math_ops;
 
 extern crate nom;

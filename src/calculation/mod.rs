@@ -1,4 +1,7 @@
 pub mod dice_rolls;
+
+// TODO: Remove after implementing math operations to dice rolls
+#[allow(dead_code)]
 pub mod math_ops;
 
 #[derive(Debug, Clone)]
