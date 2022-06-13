@@ -1,14 +1,12 @@
 extern crate nom;
 
 use nom::{
-    character::complete::{anychar, digit1, one_of, space0},
+    character::complete::{one_of},
     combinator::map_res,
-    multi::many0,
-    sequence::tuple,
     IResult,
 };
 
-use super::{number, Operation};
+use super::{Operation};
 
 fn roll_type(input: &str) -> IResult<&str, Operation> {
     map_res(one_of("+-/*"), parse_operation)(input)

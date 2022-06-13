@@ -3,7 +3,23 @@ extern crate rand;
 use crate::calculation::RollRequest;
 use crate::parsing::{ComplexDiceRoll, DiceRoll, RollModType};
 
-pub fn roll_complex_dice(roll: ComplexDiceRoll) -> Option<Vec<u64>> {
+pub fn parse_and_roll_dice(text: &str) -> Result<Vec<u64>, &str> {
+    let dice_roll_parse = parse_dice(text)?;
+    let roll_request = roll_complex_dice(dice_roll_parse);
+    match roll_request {
+        Some(result) => Ok(result),
+        None => Err("No dice left to roll!"),
+    }
+}
+
+fn parse_dice(text: &str) -> Result<ComplexDiceRoll, &str> {
+    match crate::parsing::dice_roll::complex_dice_roll_parse(text) {
+        Ok((_, successful_parsed_roll)) => Ok(successful_parsed_roll),
+        Err(_) => Err("Invalid dice roll format"),
+    }
+}
+
+fn roll_complex_dice(roll: ComplexDiceRoll) -> Option<Vec<u64>> {
     let mut roll_request = roll_simple_dice(roll.dice_roll.clone());
     for m in roll.roll_mods {
         match m.roll_mod_type {
@@ -27,22 +43,6 @@ fn roll_simple_dice(parser: DiceRoll) -> RollRequest<rand::prelude::ThreadRng> {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    fn parse_dice(text: &str) -> Result<ComplexDiceRoll, &str> {
-        match crate::parsing::dice_roll::complex_dice_roll_parse(text) {
-            Ok((_, successful_parsed_roll)) => Ok(successful_parsed_roll),
-            Err(_) => Err("Invalid dice roll format"),
-        }
-    }
-
-    fn parse_and_roll_dice(text: &str) -> Result<Vec<u64>, &str> {
-        let dice_roll_parse = parse_dice(text)?;
-        let roll_request = roll_complex_dice(dice_roll_parse);
-        match roll_request {
-            Some(result) => Ok(result),
-            None => Err("No dice left to roll!"),
-        }
-    }
 
     #[test]
     fn dice_roll_calculates_as_expected() {

@@ -1,7 +1,7 @@
 extern crate nom;
 
 use nom::{
-    character::complete::{anychar, digit1, one_of, space0},
+    character::complete::{anychar, one_of, space0},
     combinator::map_res,
     multi::many0,
     sequence::tuple,
